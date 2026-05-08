@@ -78,7 +78,7 @@ const DrillDownCard = ({ item, isOpportunity }) => {
 };
 
 export default function Reporting() {
-  const { insights, tickCount } = useLiveOps();
+  const { insights, tickCount, insightCycleIndex } = useLiveOps();
 
   return (
     <div className="grid grid-cols-12 gap-6 animate-fade-in">
@@ -87,8 +87,8 @@ export default function Reporting() {
       <WidgetContainer 
         title="Optimization Bottlenecks" 
         icon={Wrench} 
-        insight="AI identified 2 active friction points in field routing and labor allocation."
-        trigger={tickCount}
+        insight="AI is continually scanning system logs for efficiency drops."
+        trigger={insightCycleIndex}
         className="col-span-12 lg:col-span-6 h-auto min-h-[500px]"
       >
         <div className="flex flex-col space-y-4">
@@ -103,8 +103,8 @@ export default function Reporting() {
       <WidgetContainer 
         title="Revenue Expansion Vectors" 
         icon={DollarSign} 
-        insight="Predictive models indicate $16.5k in accessible pipeline."
-        trigger={tickCount}
+        insight="Predictive models constantly analyzing for un-booked revenue."
+        trigger={insightCycleIndex}
         className="col-span-12 lg:col-span-6 h-auto min-h-[500px]"
       >
         <div className="flex flex-col space-y-4">

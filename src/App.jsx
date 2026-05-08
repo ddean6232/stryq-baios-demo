@@ -21,10 +21,10 @@ function App() {
       pulse();
     }, 3000); 
 
-    // Insight Cycling Engine (Every 5 mins = 300,000ms)
+    // Insight Cycling Engine (Every 15 secs = 15,000ms for demo purposes)
     const insightInterval = setInterval(() => {
       cycleInsights();
-    }, 300000);
+    }, 15000);
     
     return () => {
       clearInterval(interval);
