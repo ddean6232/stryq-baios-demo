@@ -37,16 +37,27 @@ export const useLiveOps = create((set, get) => ({
     { name: 'Intent', value: 400, fill: '#4B5563' },
     { name: 'Booked', value: 150, fill: '#288CFA' },
   ],
-  insights: {
+  // Base insights library. We will cycle through these to simulate finding "new" areas.
+  insightsLibrary: {
     bottlenecks: [
-      { id: 'b1', type: 'Routing', title: 'Route Density Inefficiency in Zone 4', impact: '-$1,200/wk', severity: 'high', details: ['Transit time is 22% above baseline in Zone 4.', 'Technician Dave W. assigned to overlapping, non-optimized grids.', 'Suggested Action: Re-allocate Zone 4 standard jobs to Chris P. to tighten radius.'] },
-      { id: 'b2', type: 'Labor', title: 'High Idle Time: Electrical Department', impact: '-8 Hrs/wk', severity: 'medium', details: ['Alex C. experiencing 15-minute wait gaps between dispatches.', 'Parts procurement bottleneck identified at wholesale supplier.', 'Suggested Action: AI to pre-order standard electrical panels 24h prior to dispatch.'] },
+      { id: 'b1', type: 'Routing', title: 'Route Density Inefficiency in Zone 4', impact: '-$1,200/wk', severity: 'high', details: ['Transit time is 22% above baseline in Zone 4.', 'Technician Dave W. assigned to overlapping grids.', 'Suggested Action: Re-allocate Zone 4 standard jobs to Chris P. to tighten radius.'] },
+      { id: 'b2', type: 'Labor', title: 'High Idle Time: Electrical Department', impact: '-8 Hrs/wk', severity: 'medium', details: ['Alex C. experiencing 15-minute wait gaps between dispatches.', 'Parts procurement bottleneck identified at supplier.', 'Suggested Action: AI to pre-order standard panels 24h prior to dispatch.'] },
+      { id: 'b3', type: 'Inventory', title: 'Truck Stock Depletion: Copper Piping', impact: '-$800/wk', severity: 'high', details: ['Multiple technicians leaving sites to acquire 3/4" copper.', 'Warehouse parsing shows delayed restocking cycle.', 'Suggested Action: Auto-approve purchase order #4092 to resupply fleet.'] },
+      { id: 'b4', type: 'Dispatch', title: 'Weekend Coverage Gap', impact: '-$2,500/wk', severity: 'medium', details: ['Inbound emergency calls dropping 40% on Saturdays.', 'Only 1 technician scheduled for on-call triage.', 'Suggested Action: Adjust shift rotation to mandate 2 weekend techs based on historical volume.'] },
     ],
     opportunities: [
       { id: 'o1', type: 'Sales', title: 'Uncapped HVAC Maintenance Tier', impact: '+$4,500/mo', probability: '85%', details: ['42 past clients triggered for AC Maintenance due to seasonal shift.', 'Current outreach volume is constrained by agent limits.', 'Suggested Action: Spin up 2 additional Voice Assist instances to capture demand.'] },
       { id: 'o2', type: 'Up-sell', title: 'Water Heater Replacement Predictor', impact: '+$12,000/mo', probability: '72%', details: ['14 units serviced by Mike T. are past 10-year lifespan.', 'First-Time Fix Rate drops significantly on these units.', 'Suggested Action: Auto-generate replacement estimates and email to homeowners.'] },
+      { id: 'o3', type: 'Marketing', title: 'Lead Reactivation: Cold Zip Codes', impact: '+$5,000/mo', probability: '64%', details: ['Zip code 90210 shows 300 dormant leads untouched for 6 months.', 'Competitor ad spend in this region has decreased.', 'Suggested Action: Deploy aggressive AI SMS reactivation sequence to 90210.'] },
+      { id: 'o4', type: 'Pricing', title: 'Dynamic Pricing Margin Lift', impact: '+$3,200/wk', probability: '91%', details: ['Demand for emergency plumbing is peaking due to weather.', 'Current flat-rate pricing leaving margin on the table.', 'Suggested Action: Enable STRYQ Dynamic Surge Pricing (+15%) for next 48 hours.'] },
     ]
   },
+  // Currently displayed insights
+  insights: {
+    bottlenecks: [],
+    opportunities: []
+  },
+  insightCycleIndex: 0,
   technicians: [
     { id: 1, name: 'Mike T.', status: 'On-site', job: 'HVAC Repair', ftfr: 92, optimized: true, lat: 25, lng: 30, path: [] },
     { id: 2, name: 'Dave W.', status: 'Driving', job: 'Plumbing Leak', ftfr: 88, optimized: true, lat: 10, lng: 10, path: [[10,10], [50,10], [50,40], [80,40]], pathIdx: 1 },
@@ -57,6 +68,14 @@ export const useLiveOps = create((set, get) => ({
   tickCount: 0,
 
   initFetch: async () => {
+    // Initial load of insights
+    set((state) => ({
+      insights: {
+        bottlenecks: [state.insightsLibrary.bottlenecks[0], state.insightsLibrary.bottlenecks[1]],
+        opportunities: [state.insightsLibrary.opportunities[0], state.insightsLibrary.opportunities[1]]
+      }
+    }));
+
     try {
       const res = await fetch('https://randomuser.me/api/?nat=us,ca&results=50');
       const data = await res.json();
@@ -65,6 +84,36 @@ export const useLiveOps = create((set, get) => ({
     } catch (e) {
       console.error("API Name fetch failed. Using fallbacks.", e);
     }
+  },
+
+  cycleInsights: () => {
+    set((state) => {
+      const totalBottlenecks = state.insightsLibrary.bottlenecks.length;
+      const totalOpportunities = state.insightsLibrary.opportunities.length;
+      
+      // Advance index by 2
+      let newIdx = state.insightCycleIndex + 2;
+      
+      // If we've reached the end of the library, loop back to 0
+      if (newIdx >= totalBottlenecks) {
+        newIdx = 0;
+      }
+
+      // Select the next 2 items
+      const b1 = state.insightsLibrary.bottlenecks[newIdx];
+      const b2 = state.insightsLibrary.bottlenecks[(newIdx + 1) % totalBottlenecks];
+      
+      const o1 = state.insightsLibrary.opportunities[newIdx % totalOpportunities];
+      const o2 = state.insightsLibrary.opportunities[(newIdx + 1) % totalOpportunities];
+
+      return {
+        insightCycleIndex: newIdx,
+        insights: {
+          bottlenecks: [b1, b2],
+          opportunities: [o1, o2]
+        }
+      };
+    });
   },
 
   pulse: () => {

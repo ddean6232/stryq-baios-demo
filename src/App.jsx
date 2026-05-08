@@ -11,18 +11,26 @@ import { Menu, Activity } from 'lucide-react';
 function App() {
   const [currentPage, setCurrentPage] = useState('command');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { initFetch, pulse } = useLiveOps();
+  const { initFetch, pulse, cycleInsights } = useLiveOps();
 
   useEffect(() => {
     initFetch();
     
-    // Live Pulse Engine
+    // Live Pulse Engine (Every 3s)
     const interval = setInterval(() => {
       pulse();
-    }, 3000); // Pulse every 3 seconds per PRD
+    }, 3000); 
+
+    // Insight Cycling Engine (Every 5 mins = 300,000ms)
+    const insightInterval = setInterval(() => {
+      cycleInsights();
+    }, 300000);
     
-    return () => clearInterval(interval);
-  }, [initFetch, pulse]);
+    return () => {
+      clearInterval(interval);
+      clearInterval(insightInterval);
+    };
+  }, [initFetch, pulse, cycleInsights]);
 
   const renderPage = () => {
     switch (currentPage) {
