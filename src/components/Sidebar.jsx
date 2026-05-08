@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Users, Wrench, DollarSign, Activity, X } from 'lucide-react';
+import { LayoutDashboard, Users, Wrench, DollarSign, Activity, X, BrainCircuit } from 'lucide-react';
 
 export default function Sidebar({ currentPage, setCurrentPage, isOpen, setIsOpen }) {
   const navItems = [
@@ -7,6 +7,7 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, setIsOpen
     { id: 'leads', label: 'Growth & Leads', icon: Users },
     { id: 'field', label: 'Field Ops', icon: Wrench },
     { id: 'financials', label: 'Financial Health', icon: DollarSign },
+    { id: 'reporting', label: 'AI Reporting', icon: BrainCircuit },
   ];
 
   return (

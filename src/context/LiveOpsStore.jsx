@@ -37,6 +37,16 @@ export const useLiveOps = create((set, get) => ({
     { name: 'Intent', value: 400, fill: '#4B5563' },
     { name: 'Booked', value: 150, fill: '#288CFA' },
   ],
+  insights: {
+    bottlenecks: [
+      { id: 'b1', type: 'Routing', title: 'Route Density Inefficiency in Zone 4', impact: '-$1,200/wk', severity: 'high', details: ['Transit time is 22% above baseline in Zone 4.', 'Technician Dave W. assigned to overlapping, non-optimized grids.', 'Suggested Action: Re-allocate Zone 4 standard jobs to Chris P. to tighten radius.'] },
+      { id: 'b2', type: 'Labor', title: 'High Idle Time: Electrical Department', impact: '-8 Hrs/wk', severity: 'medium', details: ['Alex C. experiencing 15-minute wait gaps between dispatches.', 'Parts procurement bottleneck identified at wholesale supplier.', 'Suggested Action: AI to pre-order standard electrical panels 24h prior to dispatch.'] },
+    ],
+    opportunities: [
+      { id: 'o1', type: 'Sales', title: 'Uncapped HVAC Maintenance Tier', impact: '+$4,500/mo', probability: '85%', details: ['42 past clients triggered for AC Maintenance due to seasonal shift.', 'Current outreach volume is constrained by agent limits.', 'Suggested Action: Spin up 2 additional Voice Assist instances to capture demand.'] },
+      { id: 'o2', type: 'Up-sell', title: 'Water Heater Replacement Predictor', impact: '+$12,000/mo', probability: '72%', details: ['14 units serviced by Mike T. are past 10-year lifespan.', 'First-Time Fix Rate drops significantly on these units.', 'Suggested Action: Auto-generate replacement estimates and email to homeowners.'] },
+    ]
+  },
   technicians: [
     { id: 1, name: 'Mike T.', status: 'On-site', job: 'HVAC Repair', ftfr: 92, optimized: true, lat: 25, lng: 30, path: [] },
     { id: 2, name: 'Dave W.', status: 'Driving', job: 'Plumbing Leak', ftfr: 88, optimized: true, lat: 10, lng: 10, path: [[10,10], [50,10], [50,40], [80,40]], pathIdx: 1 },

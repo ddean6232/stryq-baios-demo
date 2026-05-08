@@ -4,6 +4,7 @@ import CommandCenter from './pages/CommandCenter';
 import LeadReactivation from './pages/LeadReactivation';
 import FieldOps from './pages/FieldOps';
 import Financials from './pages/Financials';
+import Reporting from './pages/Reporting';
 import { useLiveOps } from './context/LiveOpsStore';
 import { Menu, Activity } from 'lucide-react';
 
@@ -29,6 +30,7 @@ function App() {
       case 'leads': return <LeadReactivation />;
       case 'field': return <FieldOps />;
       case 'financials': return <Financials />;
+      case 'reporting': return <Reporting />;
       default: return <CommandCenter />;
     }
   };
